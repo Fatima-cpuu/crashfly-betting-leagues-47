@@ -1,13 +1,28 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React from "react";
+import { GameProvider } from "@/contexts/GameContext";
+import GameHeader from "@/components/GameHeader";
+import GameCanvas from "@/components/GameCanvas";
+import BetControls from "@/components/BetControls";
+import GamePlayers from "@/components/GamePlayers";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <GameProvider>
+      <div className="min-h-screen bg-black flex flex-col">
+        <GameHeader />
+        
+        <div className="p-4 space-y-4">
+          <GameCanvas />
+          
+          <BetControls betIndex={0} />
+          
+          <BetControls betIndex={1} />
+          
+          <GamePlayers />
+        </div>
       </div>
-    </div>
+    </GameProvider>
   );
 };
 

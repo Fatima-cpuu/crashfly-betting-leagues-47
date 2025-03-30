@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,12 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				aviator: {
+					red: '#ff173d',
+					green: '#32CD32',
+					dark: '#121212',
+					gray: '#333333',
+					lightgray: '#666666',
 				}
-			},
-			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
 			},
 			keyframes: {
 				'accordion-down': {
@@ -84,11 +87,26 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'plane-flying': {
+					'0%': { transform: 'translateX(0) translateY(0)' },
+					'100%': { transform: 'translateX(100px) translateY(-50px)' }
+				},
+				'plane-crash': {
+					'0%': { transform: 'translateX(0) translateY(0) rotate(0deg)' },
+					'100%': { transform: 'translateX(60px) translateY(80px) rotate(45deg)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'plane-flying': 'plane-flying 5s linear infinite',
+				'plane-crash': 'plane-crash 1s ease-in forwards'
+			},
+			borderRadius: {
+				lg: 'var(--radius)',
+				md: 'calc(var(--radius) - 2px)',
+				sm: 'calc(var(--radius) - 4px)'
 			}
 		}
 	},

@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,19 +36,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -96,6 +90,28 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-black text-foreground;
+  }
+}
+
+@layer components {
+  .ray-background {
+    background-image: repeating-radial-gradient(circle at 50% 50%, transparent 0, #121212 20px, #161616 40px);
+  }
+
+  .aviator-button {
+    @apply rounded-md transition-colors;
+  }
+
+  .bet-button {
+    @apply bg-aviator-green text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600 transition-colors w-full;
+  }
+
+  .tab-button {
+    @apply bg-aviator-gray text-white py-2 px-4 rounded-t-lg hover:bg-aviator-lightgray transition-colors;
+  }
+
+  .tab-button-active {
+    @apply bg-aviator-lightgray text-white py-2 px-4 rounded-t-lg;
   }
 }

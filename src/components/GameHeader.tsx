@@ -3,6 +3,7 @@ import React from "react";
 import { useGame } from "@/contexts/GameContext";
 import { formatMultiplier, formatCurrency } from "@/utils/gameUtils";
 import { HelpCircle } from "lucide-react";
+import MainNavigation from "@/components/NavigationMenu";
 
 const GameHeader: React.FC = () => {
   const { history, userBalance } = useGame();
@@ -16,6 +17,8 @@ const GameHeader: React.FC = () => {
         </div>
         <div className="text-aviator-green font-bold text-xl">{formatCurrency(userBalance)} USD</div>
       </div>
+      
+      <MainNavigation />
       
       <div className="flex overflow-x-auto pb-2 px-2 gap-2">
         {history.map((multiplier, index) => (

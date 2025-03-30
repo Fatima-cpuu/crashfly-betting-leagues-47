@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { 
   GameState, 
@@ -33,6 +32,8 @@ interface GameContextType {
   updateBetAmount: (amount: number, betIndex: number) => void;
   toggleAutoBet: (enabled: boolean, betIndex: number) => void;
   updateAutoBetSettings: (settings: Partial<AutoBetSettings>, betIndex: number) => void;
+  addFunds: (amount: number) => void;
+  withdrawFunds: (amount: number) => boolean;
 }
 
 const defaultAutoBetSettings: AutoBetSettings = {
@@ -59,22 +60,19 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     { amount: 1.0, autoSettings: { ...defaultAutoBetSettings } },
     { amount: 1.0, autoSettings: { ...defaultAutoBetSettings } }
   ]);
-  const [userBalance, setUserBalance] = useState<number>(0);
+  const [userBalance, setUserBalance] = useState<number>(3000);
   const [userHasCashedOut, setUserHasCashedOut] = useState<boolean[]>([false, false]);
   const [intervalId, setIntervalId] = useState<number | null>(null);
 
-  // Generate initial data
   useEffect(() => {
     setPlayers(generateGamePlayers(15));
     setTopPlayers(generateTopPlayers(10));
     setHistory(Array.from({ length: 10 }, () => generateCrashPoint()));
   }, []);
 
-  // Update players cashing out during game
   useEffect(() => {
     if (gameState === GameState.RUNNING) {
       const updatedPlayers = players.map(player => {
-        // If player hasn't cashed out yet, decide if they cash out at the current multiplier
         if (!player.hashedOut && Math.random() < 0.03) {
           return {
             ...player,
@@ -89,7 +87,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [currentMultiplier, gameState, players]);
 
-  // Auto cash out logic
   useEffect(() => {
     if (gameState === GameState.RUNNING) {
       userBet.forEach((bet, index) => {
@@ -104,30 +101,24 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [currentMultiplier, gameState, userBet]);
 
-  // Game loop
   const startGame = useCallback(() => {
     setGameState(GameState.RUNNING);
     setCrashPoint(generateCrashPoint());
     setCurrentMultiplier(1.0);
     
-    // Reset cashout state
     setUserHasCashedOut([false, false]);
     
-    // Start multiplier increasing
     const id = window.setInterval(() => {
       setCurrentMultiplier(prev => {
         const newMultiplier = parseFloat((prev * 1.01).toFixed(2));
         
-        // Check if we've reached the crash point
         if (newMultiplier >= crashPoint) {
           window.clearInterval(id);
           setIntervalId(null);
           setGameState(GameState.CRASHED);
           
-          // Add to history
           setHistory(prev => [crashPoint, ...prev].slice(0, 10));
           
-          // Schedule next round
           setTimeout(() => {
             setGameState(GameState.WAITING);
             setCountdownTime(10);
@@ -142,7 +133,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIntervalId(id);
   }, [crashPoint]);
 
-  // Countdown timer
   useEffect(() => {
     if (gameState === GameState.WAITING) {
       const id = window.setInterval(() => {
@@ -150,7 +140,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (prev <= 1) {
             clearInterval(id);
             setGameState(GameState.COUNTDOWN);
-            // Start the game
             setTimeout(() => {
               startGame();
             }, 1000);
@@ -166,7 +155,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [gameState, startGame]);
 
-  // Clean up interval on unmount
   useEffect(() => {
     return () => {
       if (intervalId) {
@@ -175,7 +163,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, [intervalId]);
 
-  // Game actions
   const placeBet = (betIndex: number) => {
     if (gameState !== GameState.WAITING && gameState !== GameState.COUNTDOWN) {
       toast("Cannot place bet while game is in progress");
@@ -184,7 +171,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     const bet = userBet[betIndex].amount;
     
-    // Update balance, deduct bet amount
+    if (userBalance < bet) {
+      toast.error("Insufficient balance");
+      return;
+    }
+    
     setUserBalance(prev => prev - bet);
     toast(`Bet placed: ${bet} USD`);
   };
@@ -196,10 +187,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     const profit = userBet[betIndex].amount * currentMultiplier;
     
-    // Update user balance
     setUserBalance(prev => prev + profit);
     
-    // Mark this bet as cashed out
     setUserHasCashedOut(prev => {
       const updated = [...prev];
       updated[betIndex] = true;
@@ -210,9 +199,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateBetAmount = (amount: number, betIndex: number) => {
+    const limitedAmount = Math.min(amount, 100);
+    
     setUserBet(prev => {
       const updated = [...prev];
-      updated[betIndex] = { ...updated[betIndex], amount };
+      updated[betIndex] = { ...updated[betIndex], amount: limitedAmount };
       return updated;
     });
   };
@@ -245,6 +236,22 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
+  const addFunds = (amount: number) => {
+    setUserBalance(prev => prev + amount);
+    toast.success(`Successfully deposited ${amount} USD`);
+  };
+
+  const withdrawFunds = (amount: number) => {
+    if (amount > userBalance) {
+      toast.error("Insufficient balance");
+      return false;
+    }
+    
+    setUserBalance(prev => prev - amount);
+    toast.success(`Successfully withdrawn ${amount} USD`);
+    return true;
+  };
+
   return (
     <GameContext.Provider
       value={{
@@ -263,6 +270,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateBetAmount,
         toggleAutoBet,
         updateAutoBetSettings,
+        addFunds,
+        withdrawFunds,
       }}
     >
       {children}

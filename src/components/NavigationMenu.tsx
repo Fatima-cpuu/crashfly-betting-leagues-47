@@ -1,7 +1,6 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Support, Wallet, DollarSign } from "lucide-react";
+import { HelpCircle, Wallet, DollarSign } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -23,8 +22,8 @@ const MainNavigation: React.FC = () => {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-transparent hover:bg-gray-800">
-                  <Support className="mr-2" size={18} />
-                  Support
+                  <HelpCircle className="mr-2" size={18} />
+                  Customer Care
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-gray-800 border-gray-700">
                   <ul className="grid gap-3 p-4 w-[300px]">
@@ -68,7 +67,7 @@ const MainNavigation: React.FC = () => {
                           className="w-full justify-start"
                           onClick={() => navigate("/support/email")}
                         >
-                          Email Support
+                          Email Customer Care
                         </Button>
                       </NavigationMenuLink>
                     </li>

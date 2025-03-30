@@ -15,7 +15,7 @@ const GameHeader: React.FC = () => {
           <h1 className="text-aviator-red text-3xl font-bold">Aviator</h1>
           <HelpCircle className="ml-2 text-gray-400" size={20} />
         </div>
-        <div className="text-aviator-green font-bold text-xl">{formatCurrency(userBalance)} USD</div>
+        <div className="text-green-500 font-bold text-xl">{formatCurrency(userBalance)} USD</div>
       </div>
       
       <MainNavigation />
@@ -25,9 +25,9 @@ const GameHeader: React.FC = () => {
           <div 
             key={index}
             className={`text-xs font-medium px-2 py-1 rounded ${
-              multiplier < 2 ? 'text-red-400' : 
-              multiplier < 10 ? 'text-blue-400' : 
-              'text-purple-400'
+              multiplier < 2 ? 'text-blue-400' : 
+              multiplier < 10 ? 'text-purple-400' : 
+              'text-pink-400'
             }`}
           >
             {formatMultiplier(multiplier)}

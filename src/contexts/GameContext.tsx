@@ -13,7 +13,7 @@ import {
   generateTopPlayers,
   generateCashoutMultiplier
 } from "../utils/gameUtils";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 interface GameContextType {
   gameState: GameState;

@@ -2,7 +2,7 @@
 import React from "react";
 import { useGame } from "@/contexts/GameContext";
 import { formatMultiplier } from "@/utils/gameUtils";
-import { QuestionMark } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 
 const GameHeader: React.FC = () => {
   const { history } = useGame();
@@ -12,7 +12,7 @@ const GameHeader: React.FC = () => {
       <div className="flex justify-between items-center px-4 py-2">
         <div className="flex items-center">
           <h1 className="text-aviator-red text-3xl font-bold">Aviator</h1>
-          <QuestionMark className="ml-2 text-gray-400" size={20} />
+          <HelpCircle className="ml-2 text-gray-400" size={20} />
         </div>
         <div className="text-aviator-green font-bold text-xl">0.00 USD</div>
       </div>

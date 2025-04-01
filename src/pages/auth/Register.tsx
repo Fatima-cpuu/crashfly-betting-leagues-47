@@ -61,10 +61,13 @@ const Register = () => {
       };
       
       localStorage.setItem("aviatorUser", JSON.stringify(userData));
-      localStorage.setItem("aviatorLoggedIn", "true");
       
-      toast.success("Registration successful!");
-      navigate("/");
+      // Instead of setting logged in status and navigating to home,
+      // we'll navigate to login with the email and password
+      toast.success("Registration successful! Please log in.");
+      
+      // Navigate to login page with credentials
+      navigate(`/auth/login?email=${encodeURIComponent(data.email)}&password=${encodeURIComponent(data.password)}`);
     } catch (error) {
       toast.error("Registration failed. Please try again.");
       console.error(error);

@@ -1,6 +1,6 @@
 
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -19,15 +19,35 @@ type FormValues = z.infer<typeof formSchema>;
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Parse query parameters
+  const queryParams = new URLSearchParams(location.search);
+  const emailFromRegister = queryParams.get('email') || "";
+  const passwordFromRegister = queryParams.get('password') || "";
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: emailFromRegister,
+      password: passwordFromRegister,
     },
   });
+
+  useEffect(() => {
+    // When credentials are passed from registration, update form values
+    if (emailFromRegister && passwordFromRegister) {
+      form.setValue("email", emailFromRegister);
+      form.setValue("password", passwordFromRegister);
+      
+      // Clean the URL to remove the credentials
+      if (window.history && window.history.replaceState) {
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    }
+  }, [emailFromRegister, passwordFromRegister, form]);
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);

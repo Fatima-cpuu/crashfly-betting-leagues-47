@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { 
   GameState, 
@@ -60,7 +61,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     { amount: 1.0, autoSettings: { ...defaultAutoBetSettings } },
     { amount: 1.0, autoSettings: { ...defaultAutoBetSettings } }
   ]);
-  const [userBalance, setUserBalance] = useState<number>(3000);
+  const [userBalance, setUserBalance] = useState<number>(0); // Changed to 0
   const [userHasCashedOut, setUserHasCashedOut] = useState<boolean[]>([false, false]);
   const [intervalId, setIntervalId] = useState<number | null>(null);
 

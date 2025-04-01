@@ -5,36 +5,44 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 const FAQ = () => {
   const faqItems = [
     {
-      question: "How does the Aviator game work?",
-      answer: "Aviator is a multiplayer game where you bet on a virtual plane that takes off and flies, with a multiplier that increases as it goes higher. The goal is to cash out before the plane flies away, securing your winnings. If you wait too long and the plane flies away before you cash out, you lose your bet."
+      question: "What is the Aviator game?",
+      answer: "Aviator is an engaging multiplayer crash game with a growing multiplier. Watch as the airplane takes off and the multiplier increases. Cash out before the plane flies away to secure your winnings."
     },
     {
-      question: "What are the minimum and maximum bet amounts?",
-      answer: "The minimum bet amount is $1.00 and the maximum bet amount is $100.00 per bet."
+      question: "How do I play Aviator?",
+      answer: "Place a bet and watch as the multiplier increases. Cash out before the airplane flies away to win your bet multiplied by the value at which you cashed out. If you don't cash out in time, you lose your bet."
+    },
+    {
+      question: "What is Auto Cash Out?",
+      answer: "Auto Cash Out allows you to set a multiplier value at which your bet will be automatically cashed out. This feature ensures you don't miss your desired cash out point."
     },
     {
       question: "Can I place multiple bets in one round?",
-      answer: "Yes, you can place up to two bets simultaneously in each round."
+      answer: "Yes, you can place up to 2 independent bets per round. Each bet can have its own Auto Cash Out setting or be manually cashed out at different multipliers."
     },
     {
-      question: "What is auto cash out?",
-      answer: "Auto cash out allows you to set a target multiplier. When the multiplier reaches your set value, the system will automatically cash out for you."
+      question: "Is Aviator fair?",
+      answer: "Yes, Aviator uses a provably fair algorithm that ensures the outcome of each round cannot be manipulated or predicted. Each round's result is determined before it starts."
     },
     {
-      question: "What is auto betting?",
-      answer: "Auto betting allows you to set parameters for automatic bets over multiple rounds. You can configure settings like bet amount, auto cash out multiplier, and stop conditions."
+      question: "What is the maximum multiplier?",
+      answer: "Theoretically, there is no maximum multiplier. However, most rounds end with multipliers between 1.00x and 10.00x. Occasionally, multipliers can reach 100x or even 1000x."
     },
     {
-      question: "How are the results determined?",
-      answer: "Game results are determined by a provably fair algorithm which ensures that game outcomes are random and cannot be predicted or manipulated."
+      question: "What happens if my internet connection drops during a game?",
+      answer: "If you've set an Auto Cash Out value and your connection drops, the system will still cash out automatically at your specified multiplier. If not, your bet will be lost if the plane flies away."
     },
     {
-      question: "How do I deposit funds?",
-      answer: "You can deposit funds through various methods including credit/debit cards, e-wallets like PayPal and Skrill, and cryptocurrencies such as Bitcoin and Ethereum."
+      question: "How do I check previous round results?",
+      answer: "Previous round results are displayed at the top of the game interface. You can see the multipliers from recent rounds to analyze patterns."
     },
     {
-      question: "How do I withdraw my winnings?",
-      answer: "You can withdraw your winnings through bank transfers, e-wallets, or cryptocurrencies. Navigate to the Withdrawal section in the main menu."
+      question: "What is Auto Bet?",
+      answer: "Auto Bet allows you to automatically place bets for multiple rounds without having to manually place each bet. You can set parameters like bet amount and Auto Cash Out value."
+    },
+    {
+      question: "How can I contact support?",
+      answer: "You can contact our support team via Telegram (@AviatorCustomerCare) or email (ellenstones54@gmail.com) for any questions or issues."
     }
   ];
 

@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { GameState } from "@/types/game";
 import { Minus, Plus } from "lucide-react";
-import AutoBetSettings from "./AutoBetSettings";
 
 interface BetControlsProps {
   betIndex: number;
@@ -13,6 +12,7 @@ const BetControls: React.FC<BetControlsProps> = ({ betIndex }) => {
   const { 
     gameState, 
     userBet, 
+    currentMultiplier,
     updateBetAmount, 
     placeBet, 
     cashOut,
@@ -21,10 +21,10 @@ const BetControls: React.FC<BetControlsProps> = ({ betIndex }) => {
   } = useGame();
   
   const [activeTab, setActiveTab] = useState<"bet" | "auto">("bet");
-  const [showSettings, setShowSettings] = useState(false);
   
   const bet = userBet[betIndex];
   const hasCashedOut = userHasCashedOut[betIndex];
+  const potentialWin = bet.amount * currentMultiplier;
 
   const handleDecrease = () => {
     const newAmount = Math.max(1, bet.amount - 1);
@@ -101,44 +101,39 @@ const BetControls: React.FC<BetControlsProps> = ({ betIndex }) => {
         {activeTab === "bet" ? (
           <button
             className={`w-full py-4 rounded-md text-white font-bold flex flex-col items-center justify-center ${
-              isRunning && !hasCashedOut ? "bg-aviator-red" : isWaiting ? "bg-green-600" : "bg-gray-600"
+              isRunning && !hasCashedOut ? "bg-green-600" : isWaiting ? "bg-green-600" : "bg-gray-600"
             }`}
             disabled={gameState === GameState.CRASHED || (isRunning && hasCashedOut)}
             onClick={isRunning && !hasCashedOut ? handleCashOut : handlePlaceBet}
           >
-            {isRunning && !hasCashedOut ? "CASH OUT" : "BET"}
+            {isRunning && !hasCashedOut ? (
+              <>
+                CASH OUT
+                <div className="text-sm mt-1">
+                  {potentialWin.toFixed(2)} USD
+                </div>
+              </>
+            ) : (
+              <>
+                BET
+                <div className="text-sm mt-1">
+                  {bet.amount.toFixed(2)} USD
+                </div>
+              </>
+            )}
+          </button>
+        ) : (
+          <button
+            className={`w-full py-4 rounded-md text-white font-bold flex flex-col items-center justify-center ${
+              bet.autoSettings.enabled ? "bg-aviator-red" : "bg-green-600"
+            }`}
+            onClick={() => toggleAutoBet(!bet.autoSettings.enabled, betIndex)}
+          >
+            {bet.autoSettings.enabled ? "STOP AUTO" : "START AUTO"}
             <div className="text-sm mt-1">
               {bet.amount.toFixed(2)} USD
             </div>
           </button>
-        ) : (
-          <>
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-white">Auto Bet</span>
-              <div className="flex items-center">
-                <button 
-                  className="text-blue-400 underline ml-4"
-                  onClick={() => setShowSettings(!showSettings)}
-                >
-                  Settings
-                </button>
-              </div>
-            </div>
-            
-            {showSettings && <AutoBetSettings betIndex={betIndex} />}
-            
-            <button
-              className={`w-full py-4 rounded-md text-white font-bold flex flex-col items-center justify-center ${
-                bet.autoSettings.enabled ? "bg-aviator-red" : "bg-green-600"
-              }`}
-              onClick={() => toggleAutoBet(!bet.autoSettings.enabled, betIndex)}
-            >
-              {bet.autoSettings.enabled ? "STOP AUTO" : "START AUTO"}
-              <div className="text-sm mt-1">
-                {bet.amount.toFixed(2)} USD
-              </div>
-            </button>
-          </>
         )}
       </div>
     </div>

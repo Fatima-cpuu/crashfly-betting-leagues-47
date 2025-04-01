@@ -28,39 +28,40 @@ const GameCanvas: React.FC = () => {
       ref={canvasRef}
       className="relative w-full h-64 bg-aviator-dark ray-background flex items-center justify-center overflow-hidden"
     >
+      {/* Plane animation - positioned under the text */}
+      {gameState === GameState.RUNNING && (
+        <div className="absolute left-1/4 bottom-1/4 transform -translate-x-1/2 text-red-500 animate-plane-flying z-10">
+          <Plane size={48} className="transform rotate-12" />
+        </div>
+      )}
+      
       {gameState === GameState.CRASHED && (
-        <div className="absolute text-center">
-          <div className="text-aviator-red font-bold text-3xl mb-2">
-            CRASHED!
+        <div className="absolute left-1/4 bottom-1/4 transform -translate-x-1/2 text-red-500 animate-plane-crash z-10">
+          <Plane size={48} />
+        </div>
+      )}
+      
+      {/* Text display - positioned above the plane with higher z-index */}
+      {gameState === GameState.CRASHED && (
+        <div className="absolute text-center z-20">
+          <div className="text-white text-xl mb-2">
+            FLEW AWAY!
           </div>
-          <div className="text-red-500 font-bold text-5xl">
+          <div className="text-aviator-red font-bold text-6xl">
             {currentMultiplier.toFixed(2)}x
           </div>
         </div>
       )}
       
       {gameState === GameState.WAITING && (
-        <div className="text-white font-bold text-3xl">
+        <div className="text-white font-bold text-3xl z-20">
           {countdownTime}
         </div>
       )}
       
       {gameState === GameState.RUNNING && (
-        <div className="text-aviator-green font-bold text-5xl">
+        <div className="text-aviator-red font-bold text-5xl z-20">
           {currentMultiplier.toFixed(2)}x
-        </div>
-      )}
-      
-      {/* Plane animation */}
-      {gameState === GameState.RUNNING && (
-        <div className="absolute left-1/4 bottom-1/4 transform -translate-x-1/2 text-red-500 animate-plane-flying">
-          <Plane size={48} className="transform rotate-12" />
-        </div>
-      )}
-      
-      {gameState === GameState.CRASHED && (
-        <div className="absolute left-1/4 bottom-1/4 transform -translate-x-1/2 text-red-500 animate-plane-crash">
-          <Plane size={48} />
         </div>
       )}
     </div>

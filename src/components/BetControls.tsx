@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { GameState } from "@/types/game";
 import { Minus, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 interface BetControlsProps {
   betIndex: number;
@@ -21,6 +22,7 @@ const BetControls: React.FC<BetControlsProps> = ({ betIndex }) => {
   } = useGame();
   
   const [activeTab, setActiveTab] = useState<"bet" | "auto">("bet");
+  const [hasBet, setHasBet] = useState<boolean>(false);
   
   const bet = userBet[betIndex];
   const hasCashedOut = userHasCashedOut[betIndex];
@@ -32,7 +34,8 @@ const BetControls: React.FC<BetControlsProps> = ({ betIndex }) => {
   };
 
   const handleIncrease = () => {
-    updateBetAmount(bet.amount + 1, betIndex);
+    const newAmount = Math.min(100, bet.amount + 1);
+    updateBetAmount(newAmount, betIndex);
   };
 
   const handleQuickAmount = (amount: number) => {
@@ -41,11 +44,23 @@ const BetControls: React.FC<BetControlsProps> = ({ betIndex }) => {
 
   const handlePlaceBet = () => {
     placeBet(betIndex);
+    setHasBet(true);
   };
 
   const handleCashOut = () => {
+    if (!hasBet) {
+      toast.error("You need to place a bet first");
+      return;
+    }
     cashOut(betIndex);
   };
+
+  // Reset hasBet when game is waiting for next round
+  React.useEffect(() => {
+    if (gameState === GameState.WAITING) {
+      setHasBet(false);
+    }
+  }, [gameState]);
 
   const isWaiting = gameState === GameState.WAITING || gameState === GameState.COUNTDOWN;
   const isRunning = gameState === GameState.RUNNING;
@@ -87,7 +102,7 @@ const BetControls: React.FC<BetControlsProps> = ({ betIndex }) => {
         </div>
 
         <div className="grid grid-cols-4 gap-2 mb-4">
-          {[1.00, 2.00, 5.00, 10.00].map((amount) => (
+          {[10.00, 25.00, 50.00, 100.00].map((amount) => (
             <button
               key={amount}
               className="bg-gray-700 text-white py-2 rounded"
@@ -101,12 +116,12 @@ const BetControls: React.FC<BetControlsProps> = ({ betIndex }) => {
         {activeTab === "bet" ? (
           <button
             className={`w-full py-4 rounded-md text-white font-bold flex flex-col items-center justify-center ${
-              isRunning && !hasCashedOut ? "bg-green-600" : isWaiting ? "bg-green-600" : "bg-gray-600"
+              isRunning && !hasCashedOut && hasBet ? "bg-green-600" : isWaiting ? "bg-green-600" : "bg-gray-600"
             }`}
-            disabled={gameState === GameState.CRASHED || (isRunning && hasCashedOut)}
-            onClick={isRunning && !hasCashedOut ? handleCashOut : handlePlaceBet}
+            disabled={gameState === GameState.CRASHED || (isRunning && hasCashedOut) || (isRunning && !hasBet)}
+            onClick={isRunning && !hasCashedOut && hasBet ? handleCashOut : handlePlaceBet}
           >
-            {isRunning && !hasCashedOut ? (
+            {isRunning && !hasCashedOut && hasBet ? (
               <>
                 CASH OUT
                 <div className="text-sm mt-1">

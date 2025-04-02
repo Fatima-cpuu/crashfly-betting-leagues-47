@@ -1,14 +1,32 @@
 
 workflows:
-  react-web-app:
-    name: React Web App
+  android-app:
+    name: Android App
     instance_type: mac_mini_m1
     environment:
       node: latest
+      java: 11
+      android_signing:
+        - keystore_reference
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
+        - ~/.npm
     scripts:
       - name: Install dependencies
         script: npm install
       - name: Build web app
         script: npm run build
+      - name: Set up Capacitor Android
+        script: |
+          npm install @capacitor/cli @capacitor/core @capacitor/android
+          npx cap init "Aviator Game" app.lovable.aviator
+          npx cap add android
+      - name: Copy web assets to Android
+        script: npx cap sync android
+      - name: Build Android APK
+        script: |
+          cd android
+          ./gradlew assembleDebug
     artifacts:
-      - build/**
+      - android/app/build/outputs/apk/**/*.apk

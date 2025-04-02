@@ -7,7 +7,7 @@ import { CopyIcon, CheckIcon, Timer } from "lucide-react";
 import QRCode from "react-qr-code";
 
 const UsdtDeposit = () => {
-  const [amount, setAmount] = useState<number>(10);
+  const [amount, setAmount] = useState<number>(15);
   const [copied, setCopied] = useState(false);
   const [timerActive, setTimerActive] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
@@ -41,8 +41,8 @@ const UsdtDeposit = () => {
   };
   
   const startPaymentTimer = () => {
-    if (amount < 10) {
-      toast.error("Minimum deposit amount is 10 USDT");
+    if (amount < 15) {
+      toast.error("Minimum deposit amount is 15 USDT");
       return;
     }
     
@@ -70,13 +70,13 @@ const UsdtDeposit = () => {
             </label>
             <Input 
               type="number" 
-              min={10} 
+              min={15} 
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
               className="bg-gray-700 text-white"
               disabled={timerActive}
             />
-            <p className="text-xs text-gray-500 mt-1">Minimum: 10 USDT</p>
+            <p className="text-xs text-gray-500 mt-1">Minimum: 15 USDT</p>
           </div>
           
           {!timerActive ? (

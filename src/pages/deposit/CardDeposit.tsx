@@ -25,11 +25,16 @@ const CardDeposit = () => {
       cardNumber: "",
       expiryDate: "",
       cvv: "",
-      amount: 100
+      amount: 15
     }
   });
 
   const onSubmit = (values: DepositFormValues) => {
+    if (values.amount < 15) {
+      toast.error("Minimum deposit amount is $15");
+      return;
+    }
+    
     setIsProcessing(true);
     
     // Simulate processing delay
@@ -109,12 +114,13 @@ const CardDeposit = () => {
                 <FormControl>
                   <Input 
                     type="number"
-                    min={10}
+                    min={15}
                     max={10000}
                     {...field}
                     onChange={e => field.onChange(parseFloat(e.target.value))}
                   />
                 </FormControl>
+                <p className="text-xs text-gray-500 mt-1">Minimum: $15</p>
               </FormItem>
             )}
           />

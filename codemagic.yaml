@@ -41,6 +41,16 @@ workflows:
             echo "Error: dist directory not found"
             exit 1
           fi
+      - name: Ensure Gradle wrapper exists
+        script: |
+          cd android
+          # Check if gradle wrapper exists, if not create it
+          if [ ! -f "gradlew" ]; then
+            echo "Gradle wrapper not found, creating it"
+            gradle wrapper
+          fi
+          # Make sure gradlew is executable
+          chmod +x gradlew
       - name: Build Android APK
         script: |
           cd android

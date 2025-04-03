@@ -22,8 +22,16 @@ workflows:
       - name: Set up Capacitor Android
         script: |
           npm install @capacitor/cli @capacitor/core @capacitor/android
-          npx cap init "Aviator Game" app.lovable.aviator --web-dir=dist
-          npx cap add android
+          # Check if capacitor.config.ts exists, create it only if it doesn't
+          if [ ! -f "capacitor.config.ts" ]; then
+            npx cap init "Aviator Game" app.lovable.aviator --web-dir=dist
+          fi
+          # Check if android directory exists, only add it if it doesn't
+          if [ ! -d "android" ]; then
+            npx cap add android
+          else
+            echo "Android platform already exists, skipping add and just syncing"
+          fi
       - name: Copy web assets to Android
         script: |
           # Make sure the dist directory exists before syncing

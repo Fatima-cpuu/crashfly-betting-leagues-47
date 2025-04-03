@@ -1,59 +1,14 @@
 
 workflows:
-  android-app:
-    name: Android App
+  react-web-app:
+    name: React Web App
     instance_type: mac_mini_m1
     environment:
       node: latest
-      java: 17
-    cache:
-      cache_paths:
-        - ~/.gradle/caches
-        - ~/.npm
     scripts:
       - name: Install dependencies
         script: npm install
       - name: Build web app
-        script: |
-          npm run build
-          mkdir -p dist
-          # Ensure the build directory exists and has content
-          ls -la dist
-      - name: Set up Capacitor Android
-        script: |
-          npm install @capacitor/cli @capacitor/core @capacitor/android
-          # Check if capacitor.config.ts exists, create it only if it doesn't
-          if [ ! -f "capacitor.config.ts" ]; then
-            npx cap init "Aviator Game" app.lovable.aviator --web-dir=dist
-          fi
-          # Check if android directory exists, only add it if it doesn't
-          if [ ! -d "android" ]; then
-            npx cap add android
-          else
-            echo "Android platform already exists, skipping add and just syncing"
-          fi
-      - name: Copy web assets to Android
-        script: |
-          # Make sure the dist directory exists before syncing
-          if [ -d "dist" ]; then
-            npx cap sync android
-          else
-            echo "Error: dist directory not found"
-            exit 1
-          fi
-      - name: Ensure Gradle wrapper exists
-        script: |
-          cd android
-          # Check if gradle wrapper exists, if not create it
-          if [ ! -f "gradlew" ]; then
-            echo "Gradle wrapper not found, creating it"
-            gradle wrapper
-          fi
-          # Make sure gradlew is executable
-          chmod +x gradlew
-      - name: Build Android APK
-        script: |
-          cd android
-          ./gradlew assembleDebug
+        script: npm run build
     artifacts:
-      - android/app/build/outputs/apk/**/*.apk
+      - build/**

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
+import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from "react";
 import { 
   GameState, 
   Player, 
@@ -34,6 +34,9 @@ interface GameContextType {
   updateAutoBetSettings: (settings: Partial<AutoBetSettings>, betIndex: number) => void;
   addFunds: (amount: number) => void;
   withdrawFunds: (amount: number) => boolean;
+  
+  // New action for external display
+  openMultiplierWindow: () => void;
 }
 
 const defaultAutoBetSettings: AutoBetSettings = {
@@ -63,6 +66,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userBalance, setUserBalance] = useState<number>(0);
   const [userHasCashedOut, setUserHasCashedOut] = useState<boolean[]>([false, false]);
   const [intervalId, setIntervalId] = useState<number | null>(null);
+  const externalWindowRef = useRef<Window | null>(null);
 
   useEffect(() => {
     setPlayers(generateGamePlayers(15));
@@ -103,21 +107,37 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const startGame = useCallback(() => {
     setGameState(GameState.RUNNING);
-    setCrashPoint(generateCrashPoint());
+    const newCrashPoint = generateCrashPoint();
+    setCrashPoint(newCrashPoint);
     setCurrentMultiplier(1.0);
     
     setUserHasCashedOut([false, false]);
+    
+    if (externalWindowRef.current && !externalWindowRef.current.closed) {
+      externalWindowRef.current.postMessage({
+        type: 'CRASH_POINT',
+        crashPoint: newCrashPoint,
+        countdown: 6
+      }, '*');
+    }
     
     const id = window.setInterval(() => {
       setCurrentMultiplier(prev => {
         const newMultiplier = parseFloat((prev * 1.01).toFixed(2));
         
-        if (newMultiplier >= crashPoint) {
+        if (externalWindowRef.current && !externalWindowRef.current.closed) {
+          externalWindowRef.current.postMessage({
+            type: 'MULTIPLIER_UPDATE',
+            multiplier: newMultiplier,
+          }, '*');
+        }
+        
+        if (newMultiplier >= newCrashPoint) {
           window.clearInterval(id);
           setIntervalId(null);
           setGameState(GameState.CRASHED);
           
-          setHistory(prev => [crashPoint, ...prev].slice(0, 10));
+          setHistory(prev => [newCrashPoint, ...prev].slice(0, 10));
           
           setTimeout(() => {
             setGameState(GameState.WAITING);
@@ -131,7 +151,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, 100);
     
     setIntervalId(id);
-  }, [crashPoint]);
+  }, []);
 
   useEffect(() => {
     if (gameState === GameState.WAITING) {
@@ -252,6 +272,30 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return true;
   };
 
+  const openMultiplierWindow = useCallback(() => {
+    if (externalWindowRef.current && !externalWindowRef.current.closed) {
+      externalWindowRef.current.close();
+    }
+    
+    const newWindow = window.open('/multiplier-display.html', 'multiplierDisplay', 
+      'width=400,height=300,menubar=no,toolbar=no');
+    
+    if (newWindow) {
+      externalWindowRef.current = newWindow;
+      
+      newWindow.onload = () => {
+        newWindow.postMessage({
+          type: 'INIT',
+          currentMultiplier: currentMultiplier,
+          gameState: gameState,
+          crashPoint: crashPoint,
+        }, '*');
+      };
+    } else {
+      toast.error('Failed to open display window. Please allow popups for this site.');
+    }
+  }, [currentMultiplier, gameState, crashPoint]);
+
   return (
     <GameContext.Provider
       value={{
@@ -272,6 +316,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateAutoBetSettings,
         addFunds,
         withdrawFunds,
+        openMultiplierWindow,
       }}
     >
       {children}

@@ -46,26 +46,6 @@ const defaultAutoBetSettings: AutoBetSettings = {
   increaseBetOnLoss: 0
 };
 
-const WEBHOOK_URL = "https://webhook.site/0fce63b1-ecdc-47ee-b789-e153cba0c5b9";
-
-const sendCrashValueToWebhook = async (crashPoint: number) => {
-  try {
-    await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        crashPoint,
-        timestamp: new Date().toISOString()
-      }),
-    });
-    console.log(`Crash value ${crashPoint} sent to webhook`);
-  } catch (error) {
-    console.error("Failed to send crash value to webhook:", error);
-  }
-};
-
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -122,24 +102,22 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [currentMultiplier, gameState, userBet]);
 
   const startGame = useCallback(() => {
-    const newCrashPoint = generateCrashPoint();
-    setCrashPoint(newCrashPoint);
     setGameState(GameState.RUNNING);
+    setCrashPoint(generateCrashPoint());
     setCurrentMultiplier(1.0);
-    setUserHasCashedOut([false, false]);
     
-    sendCrashValueToWebhook(newCrashPoint);
+    setUserHasCashedOut([false, false]);
     
     const id = window.setInterval(() => {
       setCurrentMultiplier(prev => {
         const newMultiplier = parseFloat((prev * 1.01).toFixed(2));
         
-        if (newMultiplier >= newCrashPoint) {
+        if (newMultiplier >= crashPoint) {
           window.clearInterval(id);
           setIntervalId(null);
           setGameState(GameState.CRASHED);
           
-          setHistory(prev => [newCrashPoint, ...prev].slice(0, 10));
+          setHistory(prev => [crashPoint, ...prev].slice(0, 10));
           
           setTimeout(() => {
             setGameState(GameState.WAITING);
@@ -153,7 +131,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, 100);
     
     setIntervalId(id);
-  }, []);
+  }, [crashPoint]);
 
   useEffect(() => {
     if (gameState === GameState.WAITING) {

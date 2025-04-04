@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aviator Crash Predictor</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 15px;
+      background-color: #1a1a1a;
+      color: white;
+      font-family: 'Arial', sans-serif;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #ff4d4d;
+    }
+    .settings {
+      width: 100%;
+      margin-top: 15px;
+    }
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    label {
+      font-size: 14px;
+    }
+    input[type="range"] {
+      width: 150px;
+    }
+    .accuracy-value {
+      font-weight: bold;
+      color: #ff4d4d;
+    }
+    .button {
+      background-color: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    .button:hover {
+      background-color: #e63939;
+    }
+    .status {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .enable-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AVIATOR CRASH PREDICTOR</h1>
+    
+    <div class="enable-toggle">
+      <label for="enable-predictor">Enable Predictor</label>
+      <input type="checkbox" id="enable-predictor" checked>
+    </div>
+    
+    <div class="settings">
+      <div class="setting-item">
+        <label for="accuracy">Prediction Accuracy:</label>
+        <span class="accuracy-value" id="accuracy-value">85%</span>
+      </div>
+      <input type="range" id="accuracy" min="50" max="95" value="85">
+      
+      <div class="setting-item">
+        <label>Show prediction:</label>
+        <span>7 seconds before game</span>
+      </div>
+    </div>
+    
+    <button class="button" id="apply-settings">Apply Settings</button>
+    
+    <div class="status" id="status">
+      Extension is active and ready to predict
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

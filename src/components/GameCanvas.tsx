@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { GameState } from "@/types/game";
-import { Plane } from "lucide-react";
+import { Plane, Radio } from "lucide-react";
 
 const GameCanvas: React.FC = () => {
   const { gameState, currentMultiplier, countdownTime } = useGame();
@@ -64,6 +64,12 @@ const GameCanvas: React.FC = () => {
           <Plane size={48} />
         </div>
       )}
+      
+      {/* Webhook indicator */}
+      <div className="absolute top-2 right-2 flex items-center text-xs text-gray-400">
+        <Radio className="h-3 w-3 mr-1 animate-pulse text-green-500" />
+        <span>Live</span>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { GameState } from "@/types/game";
 import { Minus, Plus } from "lucide-react";
@@ -56,7 +56,7 @@ const BetControls: React.FC<BetControlsProps> = ({ betIndex }) => {
   };
 
   // Reset hasBet when game is waiting for next round
-  React.useEffect(() => {
+  useEffect(() => {
     if (gameState === GameState.WAITING) {
       setHasBet(false);
     }
@@ -64,6 +64,7 @@ const BetControls: React.FC<BetControlsProps> = ({ betIndex }) => {
 
   const isWaiting = gameState === GameState.WAITING || gameState === GameState.COUNTDOWN;
   const isRunning = gameState === GameState.RUNNING;
+  const canCashOut = isRunning && !hasCashedOut && hasBet;
 
   return (
     <div className="w-full bg-aviator-dark rounded-lg overflow-hidden">
@@ -116,12 +117,12 @@ const BetControls: React.FC<BetControlsProps> = ({ betIndex }) => {
         {activeTab === "bet" ? (
           <button
             className={`w-full py-4 rounded-md text-white font-bold flex flex-col items-center justify-center ${
-              isRunning && !hasCashedOut && hasBet ? "bg-green-600" : isWaiting ? "bg-green-600" : "bg-gray-600"
+              canCashOut ? "bg-green-600" : isWaiting ? "bg-green-600" : "bg-gray-600"
             }`}
             disabled={gameState === GameState.CRASHED || (isRunning && hasCashedOut) || (isRunning && !hasBet)}
-            onClick={isRunning && !hasCashedOut && hasBet ? handleCashOut : handlePlaceBet}
+            onClick={canCashOut ? handleCashOut : handlePlaceBet}
           >
-            {isRunning && !hasCashedOut && hasBet ? (
+            {canCashOut ? (
               <>
                 CASH OUT
                 <div className="text-sm mt-1">

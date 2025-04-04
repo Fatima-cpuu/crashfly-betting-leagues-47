@@ -56,15 +56,15 @@ const GameCanvas: React.FC = () => {
         </div>
       )}
       
-      {/* Plane animation - positioned under the text with lower z-index */}
+      {/* Plane animation - updated positioning to fly under and across numbers */}
       {gameState === GameState.RUNNING && (
-        <div className="absolute left-1/4 bottom-1/4 transform -translate-x-1/2 text-red-500 animate-plane-flying z-10">
+        <div className="absolute left-0 bottom-1/3 transform -translate-y-1/2 text-red-500 animate-plane-flying-across z-10">
           <Plane size={48} className="transform rotate-12" />
         </div>
       )}
       
       {gameState === GameState.CRASHED && (
-        <div className="absolute left-1/4 bottom-1/4 transform -translate-x-1/2 text-red-500 animate-plane-crash z-10">
+        <div className="absolute right-1/4 bottom-1/3 transform -translate-y-1/2 text-red-500 animate-plane-crash z-10">
           <Plane size={48} />
         </div>
       )}

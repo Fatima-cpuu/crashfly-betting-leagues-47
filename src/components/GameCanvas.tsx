@@ -3,7 +3,6 @@ import React, { useRef, useEffect } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { GameState } from "@/types/game";
 import { Plane } from "lucide-react";
-import CrashPredictor from "./CrashPredictor";
 
 const GameCanvas: React.FC = () => {
   const { gameState, currentMultiplier, countdownTime } = useGame();
@@ -29,9 +28,6 @@ const GameCanvas: React.FC = () => {
       ref={canvasRef}
       className="relative w-full h-64 bg-aviator-dark ray-background flex items-center justify-center overflow-hidden"
     >
-      {/* Crash Predictor Component */}
-      <CrashPredictor />
-      
       {/* Text display - positioned with higher z-index */}
       {gameState === GameState.CRASHED && (
         <div className="absolute text-center z-20">
@@ -56,15 +52,15 @@ const GameCanvas: React.FC = () => {
         </div>
       )}
       
-      {/* Plane animation - updated positioning to fly under and across numbers */}
+      {/* Plane animation - positioned under the text with lower z-index */}
       {gameState === GameState.RUNNING && (
-        <div className="absolute left-0 bottom-1/3 transform -translate-y-1/2 text-red-500 animate-plane-flying-across z-10">
+        <div className="absolute left-1/4 bottom-1/4 transform -translate-x-1/2 text-red-500 animate-plane-flying z-10">
           <Plane size={48} className="transform rotate-12" />
         </div>
       )}
       
       {gameState === GameState.CRASHED && (
-        <div className="absolute right-1/4 bottom-1/3 transform -translate-y-1/2 text-red-500 animate-plane-crash z-10">
+        <div className="absolute left-1/4 bottom-1/4 transform -translate-x-1/2 text-red-500 animate-plane-crash z-10">
           <Plane size={48} />
         </div>
       )}

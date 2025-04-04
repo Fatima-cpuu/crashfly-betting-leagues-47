@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { GameState } from "@/types/game";
 import { Plane } from "lucide-react";
+import CrashPredictor from "./CrashPredictor";
 
 const GameCanvas: React.FC = () => {
   const { gameState, currentMultiplier, countdownTime } = useGame();
@@ -28,6 +29,9 @@ const GameCanvas: React.FC = () => {
       ref={canvasRef}
       className="relative w-full h-64 bg-aviator-dark ray-background flex items-center justify-center overflow-hidden"
     >
+      {/* Crash Predictor Component */}
+      <CrashPredictor />
+      
       {/* Text display - positioned with higher z-index */}
       {gameState === GameState.CRASHED && (
         <div className="absolute text-center z-20">

@@ -46,7 +46,7 @@ const DepositMain = () => {
               • We accept USDT deposits on the TRC20 network only
             </p>
             <p className="text-gray-300">
-              • Minimum deposit: 15 USDT
+              • Minimum deposit: 10 USDT
             </p>
             <p className="text-gray-300">
               • Deposits are typically credited within 10-30 minutes after confirmation

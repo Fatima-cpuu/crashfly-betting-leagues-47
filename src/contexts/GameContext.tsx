@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { 
   GameState, 
@@ -101,9 +102,24 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [currentMultiplier, gameState, userBet]);
 
+  const sendCrashValueToBackend = useCallback((value: number) => {
+    try {
+      fetch('https://sudsy-splendid-goat.glitch.me/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ value: value })
+      });
+    } catch (error) {
+      console.error('Failed to send crash value to backend:', error);
+    }
+  }, []);
+
   const startGame = useCallback(() => {
     setGameState(GameState.RUNNING);
-    setCrashPoint(generateCrashPoint());
+    const newCrashPoint = generateCrashPoint();
+    setCrashPoint(newCrashPoint);
     setCurrentMultiplier(1.0);
     
     setUserHasCashedOut([false, false]);
@@ -112,12 +128,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCurrentMultiplier(prev => {
         const newMultiplier = parseFloat((prev * 1.01).toFixed(2));
         
-        if (newMultiplier >= crashPoint) {
+        if (newMultiplier >= newCrashPoint) {
           window.clearInterval(id);
           setIntervalId(null);
           setGameState(GameState.CRASHED);
           
-          setHistory(prev => [crashPoint, ...prev].slice(0, 10));
+          // Send crash value to backend when game crashes
+          sendCrashValueToBackend(newCrashPoint);
+          
+          setHistory(prev => [newCrashPoint, ...prev].slice(0, 10));
           
           setTimeout(() => {
             setGameState(GameState.WAITING);
@@ -131,7 +150,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, 100);
     
     setIntervalId(id);
-  }, [crashPoint]);
+  }, [sendCrashValueToBackend]);
 
   useEffect(() => {
     if (gameState === GameState.WAITING) {

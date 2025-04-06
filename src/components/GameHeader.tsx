@@ -2,7 +2,7 @@
 import React from "react";
 import { useGame } from "@/contexts/GameContext";
 import { formatMultiplier, formatCurrency } from "@/utils/gameUtils";
-import { HelpCircle, MoreVertical } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import MainNavigation from "@/components/NavigationMenu";
 
 const GameHeader: React.FC = () => {
@@ -12,7 +12,6 @@ const GameHeader: React.FC = () => {
     <div className="flex flex-col w-full bg-black">
       <div className="flex justify-between items-center px-4 py-2">
         <div className="flex items-center gap-4">
-          <MoreVertical className="text-gray-400" size={24} />
           <h1 className="text-aviator-red text-3xl font-bold">Aviator</h1>
           <HelpCircle className="text-gray-400" size={20} />
         </div>

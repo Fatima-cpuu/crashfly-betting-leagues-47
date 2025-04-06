@@ -18,6 +18,13 @@ const AutoBetSettings: React.FC<AutoBetSettingsProps> = ({ betIndex }) => {
     updateAutoBetSettings({ autoCashout: value[0] }, betIndex);
   };
 
+  const handleAutoCashoutInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value) || 1.1;
+    // Ensure the value is within the valid range
+    const clampedValue = Math.min(Math.max(value, 1.1), 10);
+    updateAutoBetSettings({ autoCashout: clampedValue }, betIndex);
+  };
+
   const handleStopOnWinChange = (checked: boolean) => {
     updateAutoBetSettings({ stopOnWin: checked }, betIndex);
   };
@@ -36,7 +43,15 @@ const AutoBetSettings: React.FC<AutoBetSettingsProps> = ({ betIndex }) => {
       <div className="mb-4">
         <div className="flex justify-between mb-1">
           <Label className="text-white">Auto Cash Out at</Label>
-          <span className="text-white">{settings.autoCashout.toFixed(2)}x</span>
+          <Input
+            type="number"
+            className="w-20 h-8 text-right"
+            value={settings.autoCashout.toFixed(1)}
+            onChange={handleAutoCashoutInputChange}
+            min={1.1}
+            max={10}
+            step={0.1}
+          />
         </div>
         <Slider
           value={[settings.autoCashout]}

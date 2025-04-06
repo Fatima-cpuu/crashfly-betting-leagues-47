@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { 
   GameState, 
@@ -66,6 +65,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userHasCashedOut, setUserHasCashedOut] = useState<boolean[]>([false, false]);
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const [crashPrediction, setCrashPrediction] = useState<number | null>(null);
+  const [nextCrashPoint, setNextCrashPoint] = useState<number | null>(null);
 
   useEffect(() => {
     setPlayers(generateGamePlayers(15));
@@ -118,40 +118,25 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  // Generate prediction based on history
   const predictNextCrash = useCallback(() => {
-    if (history.length < 3) return null;
+    if (!nextCrashPoint) return null;
     
-    // Simple prediction algorithm
-    const recentValues = history.slice(0, 3);
-    // Weighted average with some randomness
-    const weightedAvg = recentValues.reduce((sum, val, i) => sum + (val * (3 - i) / 6), 0);
+    const variationPercent = 0.05;
+    const variation = nextCrashPoint * variationPercent * (Math.random() * 2 - 1);
     
-    // Add slight variation
-    const variance = Math.random() * 0.5 - 0.25;
-    let predictedValue = weightedAvg + variance;
-    
-    // Ensure value is within reasonable range (1.01 to 8.00 most of the time)
-    // With rare high spikes
-    if (Math.random() > 0.95) {
-      // Rare high spike (8.01 to 30.00)
-      predictedValue = 8.01 + Math.random() * 21.99;
-    } else if (Math.random() > 0.80) {
-      // Medium-high values (3.01 to 8.00)
-      predictedValue = 3.01 + Math.random() * 4.99;
-    } else {
-      // Ensure low values (1.01 to 3.00)
-      predictedValue = Math.max(1.01, Math.min(3.0, predictedValue));
-    }
+    const predictedValue = nextCrashPoint + variation;
     
     return parseFloat(predictedValue.toFixed(2));
-  }, [history]);
+  }, [nextCrashPoint]);
 
   const startGame = useCallback(() => {
     setGameState(GameState.RUNNING);
-    const newCrashPoint = generateCrashPoint();
+    
+    const newCrashPoint = nextCrashPoint || generateCrashPoint();
     setCrashPoint(newCrashPoint);
     setCurrentMultiplier(1.0);
+    
+    setNextCrashPoint(generateCrashPoint());
     
     setUserHasCashedOut([false, false]);
     
@@ -180,7 +165,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, 100);
     
     setIntervalId(id);
-  }, [sendCrashValueToBackend]);
+  }, [nextCrashPoint, sendCrashValueToBackend]);
 
   useEffect(() => {
     if (gameState === GameState.WAITING) {
@@ -204,7 +189,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [gameState, startGame]);
 
-  // Generate prediction when countdown is at 7 seconds
   useEffect(() => {
     if (gameState === GameState.WAITING && countdownTime === 7) {
       setCrashPrediction(predictNextCrash());

@@ -54,8 +54,8 @@ const GameCanvas: React.FC = () => {
       
       {/* Prediction Box */}
       {crashPrediction !== null && gameState === GameState.WAITING && (
-        <div className="absolute left-3 bottom-3 bg-black bg-opacity-70 px-2 py-1 rounded z-30 border border-aviator-red">
-          <div className="text-yellow-400 text-xs font-mono">
+        <div className="absolute left-3 bottom-3 bg-black bg-opacity-80 px-3 py-1 rounded z-30 border border-yellow-400 shadow-md shadow-yellow-400/20">
+          <div className="text-yellow-400 text-xs font-mono font-bold">
             {crashPrediction.toFixed(2)}x
           </div>
         </div>

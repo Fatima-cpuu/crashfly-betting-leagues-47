@@ -5,7 +5,7 @@ import { GameState } from "@/types/game";
 import { Plane } from "lucide-react";
 
 const GameCanvas: React.FC = () => {
-  const { gameState, currentMultiplier, countdownTime } = useGame();
+  const { gameState, currentMultiplier, countdownTime, crashPrediction } = useGame();
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const getStatusText = () => {
@@ -49,6 +49,15 @@ const GameCanvas: React.FC = () => {
       {gameState === GameState.RUNNING && (
         <div className="text-aviator-red font-bold text-5xl z-20">
           {currentMultiplier.toFixed(2)}x
+        </div>
+      )}
+      
+      {/* Prediction Box */}
+      {crashPrediction !== null && gameState === GameState.WAITING && (
+        <div className="absolute left-3 bottom-3 bg-black bg-opacity-70 px-2 py-1 rounded z-30 border border-aviator-red">
+          <div className="text-yellow-400 text-xs font-mono">
+            {crashPrediction.toFixed(2)}x
+          </div>
         </div>
       )}
       

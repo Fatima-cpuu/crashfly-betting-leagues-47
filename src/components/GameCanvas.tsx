@@ -52,11 +52,11 @@ const GameCanvas: React.FC = () => {
         </div>
       )}
       
-      {/* Prediction Box */}
+      {/* Prediction Box - now with an exact match indicator */}
       {crashPrediction !== null && gameState === GameState.WAITING && (
-        <div className="absolute left-3 bottom-3 bg-black bg-opacity-80 px-3 py-1 rounded z-30 border border-yellow-400 shadow-md shadow-yellow-400/20">
-          <div className="text-yellow-400 text-xs font-mono font-bold">
-            {crashPrediction.toFixed(2)}x
+        <div className="absolute left-3 bottom-3 bg-black bg-opacity-80 px-3 py-1 rounded z-30 border border-green-500 shadow-md shadow-green-400/20">
+          <div className="text-green-400 text-xs font-mono font-bold flex items-center">
+            <span className="mr-1">→</span>{crashPrediction.toFixed(2)}x
           </div>
         </div>
       )}

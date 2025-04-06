@@ -121,12 +121,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const predictNextCrash = useCallback(() => {
     if (!nextCrashPoint) return null;
     
-    const variationPercent = 0.05;
-    const variation = nextCrashPoint * variationPercent * (Math.random() * 2 - 1);
-    
-    const predictedValue = nextCrashPoint + variation;
-    
-    return parseFloat(predictedValue.toFixed(2));
+    return nextCrashPoint;
   }, [nextCrashPoint]);
 
   const startGame = useCallback(() => {

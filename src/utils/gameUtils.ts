@@ -1,8 +1,26 @@
-
-// Random crash point generator between 1.0 and 30.0
+// Random crash point generator between 1.0 and 30.0 with distribution favoring lower values
 export const generateCrashPoint = (): number => {
-  // Generate a value between 1.0 and 30.0
-  return parseFloat((Math.random() * 29 + 1).toFixed(2));
+  // Generate a random number between 0 and 1
+  const random = Math.random();
+  
+  // Distribution logic:
+  // 80% chance for 1.01 to 3.00 (low values)
+  // 15% chance for 3.01 to 8.00 (medium-high values)
+  // 5% chance for 8.01 to 30.00 (rare high spikes)
+  
+  let crashValue;
+  if (random < 0.80) {
+    // Low values (1.01 to 3.00)
+    crashValue = 1.01 + (random / 0.80) * 1.99;
+  } else if (random < 0.95) {
+    // Medium-high values (3.01 to 8.00)
+    crashValue = 3.01 + ((random - 0.80) / 0.15) * 4.99;
+  } else {
+    // High spikes (8.01 to 30.00)
+    crashValue = 8.01 + ((random - 0.95) / 0.05) * 21.99;
+  }
+  
+  return parseFloat(crashValue.toFixed(2));
 };
 
 // Format multiplier with 'x' at the end

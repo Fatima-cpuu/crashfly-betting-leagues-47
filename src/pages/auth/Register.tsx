@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -31,6 +30,19 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+// Function to generate random 10-digit user ID
+const generateUserId = (): string => {
+  return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+};
+
+// Function to generate a unique username
+const generateUsername = (): string => {
+  const prefixes = ["player", "aviator", "pilot", "flyer"];
+  const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+  const randomNumber = Math.floor(Math.random() * 10000);
+  return `${randomPrefix}${randomNumber}`;
+};
+
 const Register = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -51,6 +63,10 @@ const Register = () => {
     setIsLoading(true);
     
     try {
+      // Generate user ID and username
+      const userId = generateUserId();
+      const username = generateUsername();
+      
       // Since we're not using a real backend, we'll store the user in localStorage
       const userData = {
         name: data.name,
@@ -58,12 +74,12 @@ const Register = () => {
         password: data.password,
         phone: data.phone,
         country: data.country,
+        userId: userId,
+        username: username
       };
       
       localStorage.setItem("aviatorUser", JSON.stringify(userData));
       
-      // Instead of setting logged in status and navigating to home,
-      // we'll navigate to login with the email and password
       toast.success("Registration successful! Please log in.");
       
       // Navigate to login page with credentials

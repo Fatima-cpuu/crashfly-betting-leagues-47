@@ -1,19 +1,39 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { HelpCircle, Wallet, DollarSign, MoreVertical, LogOut } from "lucide-react";
+import { HelpCircle, Wallet, DollarSign, MoreVertical, LogOut, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
+interface UserData {
+  name: string;
+  email: string;
+  userId: string;
+  username: string;
+}
+
 const MainNavigation: React.FC = () => {
   const navigate = useNavigate();
+  const [userData, setUserData] = useState<UserData | null>(null);
+  
+  useEffect(() => {
+    const userDataString = localStorage.getItem("aviatorUser");
+    if (userDataString) {
+      try {
+        const parsedUserData = JSON.parse(userDataString);
+        setUserData(parsedUserData);
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+      }
+    }
+  }, []);
   
   const handleLogout = () => {
     localStorage.removeItem("aviatorLoggedIn");
@@ -30,7 +50,19 @@ const MainNavigation: React.FC = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-gray-800 border-gray-700 text-white">
-          {/* Customer Care section */}
+          {userData && (
+            <>
+              <DropdownMenuLabel className="flex items-center space-x-2">
+                <User className="text-aviator-red" size={16} />
+                <div>
+                  <div className="text-sm font-medium">{userData.username}</div>
+                  <div className="text-xs text-gray-400">ID: {userData.userId}</div>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-gray-700" />
+            </>
+          )}
+          
           <DropdownMenuItem 
             className="text-white cursor-pointer hover:bg-gray-700"
             onClick={() => navigate("/support/faq")}
@@ -38,6 +70,7 @@ const MainNavigation: React.FC = () => {
             <HelpCircle className="mr-2" size={16} />
             FAQ
           </DropdownMenuItem>
+          
           <DropdownMenuItem 
             className="text-white cursor-pointer hover:bg-gray-700"
             onClick={() => navigate("/support/contact")}
@@ -62,7 +95,6 @@ const MainNavigation: React.FC = () => {
           
           <DropdownMenuSeparator className="bg-gray-700" />
           
-          {/* Deposit section */}
           <DropdownMenuItem 
             className="text-white cursor-pointer hover:bg-gray-700"
             onClick={() => navigate("/deposit")}
@@ -71,7 +103,6 @@ const MainNavigation: React.FC = () => {
             Deposit
           </DropdownMenuItem>
           
-          {/* Withdrawal section */}
           <DropdownMenuItem 
             className="text-white cursor-pointer hover:bg-gray-700"
             onClick={() => navigate("/withdrawal")}
@@ -82,7 +113,6 @@ const MainNavigation: React.FC = () => {
           
           <DropdownMenuSeparator className="bg-gray-700" />
           
-          {/* Logout */}
           <DropdownMenuItem 
             className="text-white cursor-pointer hover:bg-gray-700"
             onClick={handleLogout}

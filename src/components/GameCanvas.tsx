@@ -31,23 +31,23 @@ const GameCanvas: React.FC = () => {
       {/* Text display - positioned with higher z-index */}
       {gameState === GameState.CRASHED && (
         <div className="absolute text-center z-20">
-          <div className="text-white text-lg mb-1">
+          <div className="text-white text-xl mb-2">
             FLEW AWAY!
           </div>
-          <div className="text-aviator-red font-bold text-4xl">
+          <div className="text-aviator-red font-bold text-6xl">
             {currentMultiplier.toFixed(2)}x
           </div>
         </div>
       )}
       
       {gameState === GameState.WAITING && (
-        <div className="text-white font-bold text-2xl z-20">
+        <div className="text-white font-bold text-3xl z-20">
           {countdownTime}
         </div>
       )}
       
       {gameState === GameState.RUNNING && (
-        <div className="text-aviator-red font-bold text-4xl z-20">
+        <div className="text-aviator-red font-bold text-5xl z-20">
           {currentMultiplier.toFixed(2)}x
         </div>
       )}

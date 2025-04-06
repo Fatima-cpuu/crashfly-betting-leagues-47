@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { 
   GameState, 
@@ -133,7 +132,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setIntervalId(null);
           setGameState(GameState.CRASHED);
           
-          // Send crash value to backend when game crashes
           sendCrashValueToBackend(newCrashPoint);
           
           setHistory(prev => [newCrashPoint, ...prev].slice(0, 10));
@@ -196,6 +194,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     
     setUserBalance(prev => prev - bet);
+    setUserHasCashedOut(prev => {
+      const updated = [...prev];
+      updated[betIndex] = false;
+      return updated;
+    });
+    
     toast(`Bet placed: ${bet} USD`);
   };
 
